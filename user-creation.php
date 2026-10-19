@@ -8,8 +8,9 @@ if (isset($_POST['user'])) {
 
         $set_check = "User: $user, Hash: $hash, First name: $first_name, Last name: $last_name";
 
-        $sql = "INSERT INTO users (user, pass, first_name, last_name)
-        VALUES ('$user', '$hash', '$first_name', '$last_name')";
+        $sql = $conn->prepare("INSERT INTO users (user, pass, first_name, last_name)
+        VALUES (?, ?, ?, ?)");
+        $sql->execute([$user, $hash, $first_name, $last_name]);
 
         try {
                 mysqli_query($conn, $sql);
