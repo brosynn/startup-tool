@@ -12,20 +12,14 @@ if (isset($_POST['user'])) {
         VALUES (?, ?, ?, ?)");
         $sql->execute([$user, $hash, $first_name, $last_name]);
 
-        try {
-                mysqli_query($conn, $sql);
-                echo "<script>window.location.href='index.php'</script>";
-        }
-        catch(mysqli_sql_exception $e) {
-                echo " Could not register user. Error message: " . $e->getMessage();
-        }
+        
 }
-?>
 
-<?php include 'header.php'; ?>
+include 'header.php'; ?>
                 <h1>Create New User</h1>
                 <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF'], ENT_QUOTES, 'UTF-8'); ?>" method="POST">
-                        Username: <input type="text" name="user" required><br>
+                        <label for="user">Username: </label>
+                        <input type="text" id="user" name="user" required><br>
                         Password: <input type="text" name="pass" required><br>
                         First Name: <input type="text" name="first_name" required><br>
                         Last Name: <input type="text" name="last_name" required><br>
