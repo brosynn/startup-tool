@@ -1,15 +1,15 @@
 <?php include 'database.php'; 
 
-if (isset($_POST['user'])) {
-        $user = $_POST['user'];
-        $hash = password_hash($_POST['pass'], PASSWORD_DEFAULT);
-        $first_name = $_POST['first_name'];
-        $last_name = $_POST['last_name'];
+if (isset($_POST['org'])) {
+        $org = $_POST['org'];
+        $name = $_POST['name'];
+        $desc = $_POST['desc'];
+        $logo = $_POST['logo'];
 
-        $set_check = "User: $user, Hash: $hash, First name: $first_name, Last name: $last_name";
+        $set_check = "name: $name, Description: $desc, Logo: $logo";
 
-        $sql = $conn->prepare("INSERT INTO users (user, pass, first_name, last_name)
-        VALUES (?, ?, ?, ?)");
+        $sql = $conn->prepare("INSERT INTO organizations (name, desc, logo)
+        VALUES (?, ?, ?)");
         $sql->execute([$user, $hash, $first_name, $last_name]);
 
         
@@ -21,7 +21,7 @@ include 'header.php'; ?>
                         <label for="org">Name: </label>
                         <input type="text" id="org" name="name" required><br>
                         Description (max of 256 chars): <input type="text" name="desc" required><br>
-                        Logo Picture: <input type="image" name="logo" required><br>
+                        Logo Picture: <input type="file" name="logo" required><br>
                         <input type="submit" onclick="window.location.href='index.php'">
                 </form>
         </body>
