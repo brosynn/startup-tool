@@ -5,4 +5,6 @@
         <br>
         <button onclick="window.location.href='user-creation.php'">New User</button>
     </body>
+    <button onclick="window.location.href='login.php'">Log In</button>
+    </body>
 </html>
