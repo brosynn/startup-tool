@@ -1,6 +1,5 @@
 <?php 
-require_once 'session_setup.php';
-include 'database.php';
+require_once 'config.php';
 
 if (isset($_POST['user'])) { //checks if the username entered exists and if the password is right
     $sql = "SELECT id, user, pass FROM users

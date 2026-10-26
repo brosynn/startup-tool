@@ -1,4 +1,4 @@
-<?php include 'database.php'; ?>
+<?php require_once 'config.php'; ?>
 
 <?php include 'header.php'; ?>
         <h1>Welcome to the Startup Tool! (name pending)</h1>
