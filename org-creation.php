@@ -1,4 +1,4 @@
-<?php include 'database.php'; 
+<?php include 'config.php'; 
 
 $set_check = null;
 if (isset($_POST['name'])) {
@@ -30,8 +30,12 @@ if (isset($_POST['name'])) {
 
         
 }
+<<<<<<< HEAD
 
 require_once 'header.php'; ?>
+=======
+ ?>
+>>>>>>> 0ed3f2ea1f6d2ed60751e6f21cc9a22f125933ad
                 <h1>Create New Organization</h1>
                 <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF'], ENT_QUOTES, 'UTF-8'); ?>" method="POST" enctype="multipart/form-data">
                         <label for="name">Name: </label>
