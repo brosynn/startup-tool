@@ -8,10 +8,13 @@ if (isset($_POST['user'])) {
 
         $set_check = "User: $user, Hash: $hash, First name: $first_name, Last name: $last_name";
 
-        $sql = $conn->prepare("INSERT INTO users (user, pass, first_name, last_name)
-        VALUES (?, ?, ?, ?)");
-        $sql->execute([$user, $hash, $first_name, $last_name]);
+        $sql ="INSERT INTO users (user, pass, first_name, last_name)
+        VALUES (?, ?, ?, ?)";
 
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("ssss", $user, $hash, $first_name, $last_name);
+
+        $stmt->execute();
         
 }
 
