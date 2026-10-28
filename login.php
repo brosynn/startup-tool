@@ -3,14 +3,13 @@ require_once 'config.php';
 
 if (isset($_POST['user'])) { //checks if the username entered exists and if the password is right
     // 1. Prepare the statement using your database connection variable (e.g., $conn or $db)
-    $stmt = $conn->prepare("SELECT id, user, pass FROM users WHERE user = ? AND pass = ?");
+    $stmt = $conn->prepare("SELECT id, user, pass FROM users WHERE user = ?");
 
     // 2. Assign the POST data to variables
-    $param_user = $_POST['user'][0];
-    $param_pass = $_POST['user'][1];
+    $param_user = $_POST['user'];
 
     // 3. Bind the parameters to the STATEMENT object ($stmt), not the result
-    $stmt->bind_param("ss", $param_user, $param_pass);
+    $stmt->bind_param("s", $param_user);
 
     // 4. Execute and get the result
     $stmt->execute();
