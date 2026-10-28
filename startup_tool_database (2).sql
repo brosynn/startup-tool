@@ -29,9 +29,10 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `organizations` (
   `id` int(11) NOT NULL,
-  `name` varchar(64) DEFAULT NULL,
-  `pass` text NOT NULL,
-  `email` varchar(64) NOT NULL
+  `org_name` varchar(64) DEFAULT NULL,
+  `org_desc` text NOT NULL,
+  `logo_file_path` varchar(255) NOT NULL,
+  `logo_file_name` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
