@@ -2,9 +2,20 @@
 require_once 'config.php';
 
 if (isset($_POST['user'])) { //checks if the username entered exists and if the password is right
-    $sql = "SELECT id, user, pass FROM users
-    WHERE user = ?";
-    $result = $conn->execute_query($sql, [$_POST['user']]);
+    // 1. Prepare the statement using your database connection variable (e.g., $conn or $db)
+    $stmt = $conn->prepare("SELECT id, user, pass FROM users WHERE user = ? AND pass = ?");
+
+    // 2. Assign the POST data to variables
+    $param_user = $_POST['user'][0];
+    $param_pass = $_POST['user'][1];
+
+    // 3. Bind the parameters to the STATEMENT object ($stmt), not the result
+    $stmt->bind_param("ss", $param_user, $param_pass);
+
+    // 4. Execute and get the result
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
     $account = $result->fetch_all();
     if (isset($account[0])) {
         if (password_verify($_POST['pass'], $account[0][2])) {
@@ -31,6 +42,6 @@ include 'header.php'; ?>
     <label for="user">Username: </label>
     <input type="text" id="user" name="user" required><br>
     <label for="pass">Password: </label>
-    <input type="text" id="pass" name="pass" required><br>
+    <input type="password" id="pass" name="pass" required><br>
     <input type="submit" onclick="window.location.href='index.php'">
 </form>
