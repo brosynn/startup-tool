@@ -1,6 +1,6 @@
 <?php
 require_once 'config.php';
-require_once 'login-check.php';
+include 'login-check.php';
 ?>
 
 <!DOCTYPE html>

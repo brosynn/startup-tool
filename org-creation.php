@@ -32,14 +32,22 @@ if (isset($_POST['name'])) {
 }
 
 ?>
-                <h1>Create New Organization</h1>
-                <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF'], ENT_QUOTES, 'UTF-8'); ?>" method="POST" enctype="multipart/form-data">
-                        <label for="name">Name: </label>
-                        <input type="text" id="name" name="name" required><br>
-                        Description (max of 256 chars): <input type="text" name="desc" required><br>
-                        Logo Picture: <input type="file" name="logo" id="logo" required><br>
-                        <input type="submit" onclick="window.location.href='index.php'">
-                </form>
-        </body>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Startup Tool</title>
+    </head>
+    <body>
+        <h1>Create New Organization</h1>
+        <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF'], ENT_QUOTES, 'UTF-8'); ?>" method="POST" enctype="multipart/form-data">
+            <label for="name">Name: </label>
+            <input type="text" id="name" name="name" required><br>
+            Description (max of 256 chars): <input type="text" name="desc" required><br>
+            Logo Picture: <input type="file" name="logo" id="logo" required><br>
+            <input type="submit" onclick="window.location.href='index.php'">
+        </form>
+    </body>
 </html>
 <?php mysqli_close($conn); ?>

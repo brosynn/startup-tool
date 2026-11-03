@@ -1,4 +1,8 @@
-<?php require_once 'config.php'; ?>
+<?php require_once 'config.php'; 
+if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) {
+    header("Location: dashboard.php");
+}
+ ?>
 
 <!DOCTYPE html>
 <html lang="en">
