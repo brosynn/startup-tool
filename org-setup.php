@@ -1,9 +1,11 @@
 <?php
 include_once 'config.php';
+$_SESSION['mergeFlag'] = false;
 
 if (!(session_status() === PHP_SESSION_ACTIVE))
     {
         session_start();
+        $_SESSION['mergeFlag'] = false;
     };
 
 if (isset($_SESSION['organization'])) 
@@ -97,7 +99,7 @@ if (isset($_POST['org_name']))
 
         <?php if (isset($user)) 
         { ?>
-            <h2>Selected User: <?= $user[0]['user']?></h2>
+            <h2>Selected User: <?= $user[0]['first_name'] . " " . $user[0]['last_name']?></h2>
             <button type="merge" onclick="<?php $_SESSION['mergeFlag'] = true;?> location.reload();">Set Owner</button>
         <?php }; ?>
     <?php }; ?>
