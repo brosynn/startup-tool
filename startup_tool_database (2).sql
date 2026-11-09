@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 29, 2026 at 05:28 AM
+-- Generation Time: Nov 09, 2026 at 09:02 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -24,6 +24,29 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `files`
+--
+
+CREATE TABLE `files` (
+  `id` int(11) NOT NULL,
+  `path` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `files`
+--
+
+INSERT INTO `files` (`id`, `path`, `name`) VALUES
+(11, 'bucket/', 'Cute Puppy!.jpg'),
+(12, 'bucket/', '(1)Cute Puppy!.jpg'),
+(18, 'bucket/', '(5)Cute Puppy! Awesome.jpg'),
+(19, 'bucket/', 'Cute Puppy! Awesome.jpg'),
+(20, 'bucket/', 'final.txt');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `organizations`
 --
 
@@ -31,9 +54,19 @@ CREATE TABLE `organizations` (
   `id` int(11) NOT NULL,
   `org_name` varchar(64) DEFAULT NULL,
   `org_desc` text NOT NULL,
+  `logo_file_name` varchar(255) NOT NULL,
   `logo_file_path` varchar(255) NOT NULL,
-  `logo_file_name` varchar(255) NOT NULL
+  `owner_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `organizations`
+--
+
+INSERT INTO `organizations` (`id`, `org_name`, `org_desc`, `logo_file_name`, `logo_file_path`, `owner_id`) VALUES
+(1, 'Cool Org', 'Awesome place for super coool guys', 'deez2.png', 'bucket/', 0),
+(2, 'Sussy Org', 'Amogus imposter palace', 'peas.jpg', 'bucket/', 0),
+(3, 'Asher INC.', 'We made Asher. Yep. Sorry. So so sorry. We know an apology isn\'t enough. We\'re Sorry.', 'Wanted poster.PNG', 'bucket/', 7);
 
 -- --------------------------------------------------------
 
@@ -47,6 +80,31 @@ CREATE TABLE `orgmembers` (
   `joined_at` timestamp NULL DEFAULT current_timestamp(),
   `status` int(11) NOT NULL DEFAULT 0 COMMENT '0=pending,1=approved,2=rejected'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `posts`
+--
+
+CREATE TABLE `posts` (
+  `id` int(11) NOT NULL,
+  `title` varchar(100) DEFAULT NULL,
+  `text` varchar(1000) DEFAULT NULL,
+  `file` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `posts`
+--
+
+INSERT INTO `posts` (`id`, `title`, `text`, `file`) VALUES
+(1, 'My title big', 'My text is big', 12),
+(2, 'Text title!', 'Epic awesome', 18),
+(3, 'Hello!', 'bryson', 19),
+(4, 'Hello wrold', 'Hi', NULL),
+(5, 'oky', 'yay', NULL),
+(6, 'NEw post 18 milion', '', 20);
 
 -- --------------------------------------------------------
 
@@ -72,11 +130,19 @@ INSERT INTO `users` (`user`, `pass`, `first_name`, `last_name`, `id`) VALUES
 ('bylerfan84', '$2y$10$bg0jwkYK6mTbKsj.FoGFZ.Wmx1WNZruVIw9B.LSALBOks5PMBKlBe', 'William', 'Byers', 3),
 ('Genusluvr', '$2y$10$Bwhlb7PCL6v5/J2rbD2CYev0.3rif8FAbYbeyBWK1kjVATm/MdL7y', 'Alberto', 'Einstien', 4),
 ('SNASOTE', '$2y$10$0uLYKQcsWcVG9g2lUxu0teJx13XyjrDxUt6vprDmmOdQUtRqBHOIi', 'Asher', 'Rains', 5),
-('WormsHaver', '$2y$10$lgmJAKJlnqiLQnMjQEpCyesEtYgFyylEm6smrgeFL20TTHbU2Krl.', 'Naz', 'Norris', 6);
+('WormsHaver', '$2y$10$lgmJAKJlnqiLQnMjQEpCyesEtYgFyylEm6smrgeFL20TTHbU2Krl.', 'Naz', 'Norris', 6),
+('SNASOTE2', '$2y$10$gLkYM62vmWsCq3r6oiZiden8oZ3qo6PHn9yNfCTExy2UNg9S00hSW', 'a', 'r', 7),
+('khiggins', '$2y$10$5CJaV7tBJ9oPlcI2JREEXuE11nlukJf84NG7M/0K97ZXz5nhqR7bC', 'Kristin', 'Higgins', 8);
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `files`
+--
+ALTER TABLE `files`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `organizations`
@@ -92,6 +158,13 @@ ALTER TABLE `orgmembers`
   ADD KEY `org_id` (`org_id`);
 
 --
+-- Indexes for table `posts`
+--
+ALTER TABLE `posts`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_file` (`file`);
+
+--
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
@@ -102,16 +175,28 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT for table `files`
+--
+ALTER TABLE `files`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+
+--
 -- AUTO_INCREMENT for table `organizations`
 --
 ALTER TABLE `organizations`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `posts`
+--
+ALTER TABLE `posts`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- Constraints for dumped tables
@@ -123,6 +208,12 @@ ALTER TABLE `users`
 ALTER TABLE `orgmembers`
   ADD CONSTRAINT `orgmembers_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `orgmembers_ibfk_2` FOREIGN KEY (`org_id`) REFERENCES `organizations` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `posts`
+--
+ALTER TABLE `posts`
+  ADD CONSTRAINT `fk_file` FOREIGN KEY (`file`) REFERENCES `files` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
