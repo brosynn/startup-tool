@@ -1,22 +1,32 @@
 <?php
-include_once 'config.php';
-$_SESSION['mergeFlag'] = false;
+// to-do 4 this file: ensure you cant select already set organizations, non existing users/orgs.
+//FIX THR FRICKING SESSION ISUES MFFN IUEF KVN EK
 
-if (!(session_status() === PHP_SESSION_ACTIVE))
-    {
-        session_start();
-        $_SESSION['mergeFlag'] = false;
-    };
+include_once 'config.php';
 
 if (isset($_SESSION['organization'])) 
     {
-        $organization = $_SESSION['organization']; 
+        if (!$_SESSION['resetFlag'])
+            {
+                $organization = $_SESSION['organization']; 
+            }
+        else;
+        {
+            $organization = null;
+        }
     }
 
 
 if (isset($_SESSION['user'])) 
     {
-        $user = $_SESSION['user']; 
+        if (!$_SESSION['resetFlag'])
+            {
+                $user = $_SESSION['user'];
+            }
+        else;
+        {
+            $user = null;
+        }
     }
 
 if (isset($_POST['org_name'])) 
@@ -65,8 +75,7 @@ if (isset($_POST['org_name']))
         $stmt->bind_param('is', $id_param, $org_param); 
 
         $stmt->execute();
-        echo "it has been done idk if it worked go check home skillet";
-        $_SESSION = array();
+        $_SESSION['resetFlag'] = true;
         header("Refresh:0");
         exit;
     }
@@ -100,6 +109,6 @@ if (isset($_POST['org_name']))
         <?php if (isset($user)) 
         { ?>
             <h2>Selected User: <?= $user[0]['first_name'] . " " . $user[0]['last_name']?></h2>
-            <button type="merge" onclick="<?php $_SESSION['mergeFlag'] = true;?> location.reload();">Set Owner</button>
+            <button type="button" onclick="<?php $_SESSION['mergeFlag'] = true;?> location.reload();">Set Owner</button>
         <?php }; ?>
     <?php }; ?>
