@@ -44,8 +44,10 @@ if (isset($_POST['name'])) {
         <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF'], ENT_QUOTES, 'UTF-8'); ?>" method="POST" enctype="multipart/form-data">
             <label for="name">Name: </label>
             <input type="text" id="name" name="name" required><br>
-            Description (max of 256 chars): <input type="text" name="desc" required><br>
-            Logo Picture: <input type="file" name="logo" id="logo" required><br>
+            <label for="desc">Description (max of 256 chars): </label>
+            <input type="text" name="desc" required><br>
+            <label for="logo">Logo Picture: </label>
+            <input type="file" name="logo" id="logo" required><br>
             <input type="submit" onclick="window.location.href='index.php'">
         </form>
     </body>

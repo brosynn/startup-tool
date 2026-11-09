@@ -1,0 +1,10 @@
+Yo mama so stupid she said hello to Hello
+
+while asher = stupid:
+	print "i hate asher"
+print "i still hate asher"
+
+if noah = idiot:
+	print "It's okay noah, I accept you."
+
+print "computer science students vs SHUTTING THEIR MOUTH"
