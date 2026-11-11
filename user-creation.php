@@ -1,21 +1,22 @@
 <?php require_once 'config.php'; 
 
-if (isset($_POST['user'])) {
-        $user = $_POST['user'];
-        $hash = password_hash($_POST['pass'], PASSWORD_DEFAULT);
-        $first_name = $_POST['first_name'];
-        $last_name = $_POST['last_name'];
+if (isset($_POST['user'])) { // NEED TO MAKE USERNAMES UNIQUE
+    $user = $_POST['user'];
+    $hash = password_hash($_POST['pass'], PASSWORD_DEFAULT);
+    $first_name = $_POST['first_name'];
+    $last_name = $_POST['last_name'];
 
-        $set_check = "User: $user, Hash: $hash, First name: $first_name, Last name: $last_name";
+    $set_check = "User: $user, Hash: $hash, First name: $first_name, Last name: $last_name";
 
-        $sql ="INSERT INTO users (user, pass, first_name, last_name)
-        VALUES (?, ?, ?, ?)";
+    $sql ="INSERT INTO users (user, pass, first_name, last_name)
+    VALUES (?, ?, ?, ?)";
 
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("ssss", $user, $hash, $first_name, $last_name);
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ssss", $user, $hash, $first_name, $last_name);
 
-        $stmt->execute();
-        
+    $stmt->execute();
+    
+    header("Location: dashboard.php");
 }
 ?>
 <!DOCTYPE html>

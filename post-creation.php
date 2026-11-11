@@ -60,10 +60,10 @@ if (isset($_POST['title'])) {
     $set_check = "\nTitle: $post_title, Text: $post_text, File id in db: $file_id"; 
     echo $set_check;
 
-    $sql = "INSERT INTO posts (title, text, file) VALUES (?, ?, ?)";
+    $sql = "INSERT INTO posts (title, text, file, author) VALUES (?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
 
-    $stmt->bind_param("ssi", $post_title, $post_text, $file_id);
+    $stmt->bind_param("ssii", $post_title, $post_text, $file_id, $_SESSION['user_id']);
 
     $stmt->execute();
     

@@ -21,7 +21,7 @@ if (isset($_POST['user'])) { //checks if the username entered exists and if the 
             // prevents session fixation
             session_regenerate_id(true);
 
-            $_SESSION['user_id'] = $account[0][0];
+            $_SESSION['user_id'] = $account[0][0]; // sets session variable user_id to the db id of the signed-in account
             $_SESSION['logged_in'] = true;
 
             header('Location: dashboard.php');
