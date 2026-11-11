@@ -37,5 +37,7 @@ if (isset($_POST['org_name']))
         <img src="<?= $organization[0]['logo_file_path'] . $organization[0]['logo_file_name']?>" alt="org_logo" width="350" height="350">
         <h3><?= $organization[0]['org_name'] ?></h3>
         <p><?= $organization[0]['org_desc'] ?></p>
+
+        <button type="button" onclick="">Join</button>
     
     <?php }; ?>

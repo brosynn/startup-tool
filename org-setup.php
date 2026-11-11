@@ -1,84 +1,65 @@
 <?php
-// to-do 4 this file: ensure you cant select already set organizations, non existing users/orgs.
-//FIX THR FRICKING SESSION ISUES MFFN IUEF KVN EK
+require_once 'config.php';
+// Make sure session is started at the very top of your script
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
-include_once 'config.php';
+// 1. Handle Organization Selection (Stage 1)
+if (isset($_POST['org_name'])) {
+    $sql = "SELECT * FROM organizations WHERE org_name = ?";
+    $stmt = $conn->prepare($sql);
+    $id_param = $_POST['org_name'];
+    $stmt->bind_param('s', $id_param);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $organization = $result->fetch_all(MYSQLI_ASSOC);
+    
+    $_SESSION['organization'] = $organization;
+} else {
+    $organization = $_SESSION['organization'] ?? null;
+}
 
-if (isset($_SESSION['organization'])) 
-    {
-        if (!$_SESSION['resetFlag'])
-            {
-                $organization = $_SESSION['organization']; 
-            }
-        else;
-        {
-            $organization = null;
-        }
-    }
+// 2. Handle User Selection (Stage 2)
+if (isset($_POST['owner_name'])) {
+    $sql = "SELECT * FROM users WHERE user = ?";
+    $stmt = $conn->prepare($sql);
+    $id_param = $_POST['owner_name'];
+    $stmt->bind_param('s', $id_param);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $user = $result->fetch_all(MYSQLI_ASSOC); // Assuming you fetch user similarly
+    
+    $_SESSION['selectedUser'] = $user;
+} else {
+    $user = $_SESSION['selectedUser'] ?? null;
+}
 
+// 3. Handle Final Action: Set Owner (Stage 3 - Triggered by a submit button e.g., $_POST['set_owner'])
+if (isset($_POST['set_owner']) && !empty($_SESSION['organization']) && !empty($_SESSION['selectedUser'])) {
+    $owner_id = $_SESSION['selectedUser'][0]['id'];
+    $org_name = $_SESSION['organization'][0]['org_name'];
 
-if (isset($_SESSION['user'])) 
-    {
-        if (!$_SESSION['resetFlag'])
-            {
-                $user = $_SESSION['user'];
-            }
-        else;
-        {
-            $user = null;
-        }
-    }
+    $sql = "UPDATE organizations SET owner_id = ? WHERE org_name = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param('is', $owner_id, $org_name);
+    $stmt->execute();
 
-if (isset($_POST['org_name'])) 
-    {
-        $sql = "SELECT * FROM organizations WHERE org_name = ?"; 
-        $stmt = $conn->prepare($sql); 
+    // Clear staged session data after completion
+    unset($_SESSION['organization']);
+    unset($_SESSION['selectedUser']);
 
-        $id_param = $_POST['org_name']; 
+    // Refresh the page
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit;
+}
 
-        $stmt->bind_param('s', $id_param); 
-
-        $stmt->execute(); 
-        $result = $stmt->get_result(); 
-
-        // Fetches all rows as an associative array
-        $organization = $result->fetch_all(MYSQLI_ASSOC); 
-        $_SESSION['organization'] = $organization;
-    }
-
-    if (isset($_POST['owner_name'])) 
-    {
-        $sql = "SELECT * FROM users WHERE user = ?"; 
-        $stmt = $conn->prepare($sql); 
-
-
-        $id_param = $_POST['owner_name']; 
-
-        $stmt->bind_param('s', $id_param); 
-
-        $stmt->execute(); 
-        $result = $stmt->get_result(); 
-
-        // Fetches all rows as an associative array
-        $user = $result->fetch_all(MYSQLI_ASSOC); 
-        $_SESSION['user'] = $user;
-    }
-
-    if (isset($_SESSION['mergeFlag']) && $_SESSION['mergeFlag']) 
-    {
-       $sql = "UPDATE organizations SET owner_id = ? WHERE org_name = ?";
-       $stmt = $conn->prepare($sql);
-
-        $id_param = $user[0]['id']; 
-        $org_param = $organization[0]['org_name'];
-
-        $stmt->bind_param('is', $id_param, $org_param); 
-
-        $stmt->execute();
-        $_SESSION['resetFlag'] = true;
-        header("Refresh:0");
-        exit;
-    }
+if (isset($_POST['reset_process'])) {
+    unset($_SESSION['organization']);
+    unset($_SESSION['selectedUser']);
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit;
+}
 
 ?>
 
@@ -109,6 +90,10 @@ if (isset($_POST['org_name']))
         <?php if (isset($user)) 
         { ?>
             <h2>Selected User: <?= $user[0]['first_name'] . " " . $user[0]['last_name']?></h2>
-            <button type="button" onclick="<?php $_SESSION['mergeFlag'] = true;?> location.reload();">Set Owner</button>
+            <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF'], ENT_QUOTES, 'UTF-8'); ?>" method="POST">
+            <label for="reset_process">ru rdy bro</label>
+                <button type="sybmit" onclick="location.reload();">Set Owner</button>
+            </form>
+
         <?php }; ?>
     <?php }; ?>
