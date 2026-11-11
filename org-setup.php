@@ -87,13 +87,17 @@ if (isset($_POST['reset_process'])) {
             <input type="submit" onclick="window.location.href='index.php'">
         </form>
 
-        <?php if (isset($user)) 
-        { ?>
-            <h2>Selected User: <?= $user[0]['first_name'] . " " . $user[0]['last_name']?></h2>
-            <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF'], ENT_QUOTES, 'UTF-8'); ?>" method="POST">
-            <label for="reset_process">ru rdy bro</label>
-                <button type="sybmit" onclick="location.reload();">Set Owner</button>
-            </form>
+<?php if (isset($user)) { ?>
+        <h2>Selected User: <?= htmlspecialchars($user[0]['first_name'] . " " . $user[0]['last_name'], ENT_QUOTES, 'UTF-8') ?></h2>
 
+        <form action="<?= htmlspecialchars($_SERVER['PHP_SELF'], ENT_QUOTES, 'UTF-8') ?>" method="POST">
+            <label for="reset_process">ru rdy bro</label>
+            
+            <!-- 1. Add a 'name' attribute and echo your PHP variable into 'value' -->
+            <input type="hidden" name="reset_process" value="<?= htmlspecialchars(true, ENT_QUOTES, 'UTF-8') ?>">
+            
+            <!-- 2. Remove the onclick redirect so the POST request actually submits -->
+            <input type="submit" id="reset_process" value="Submit">
+        </form>
         <?php }; ?>
     <?php }; ?>
