@@ -3,21 +3,38 @@
 require_once 'config.php';
 
 if (isset($_POST['org_name'])) 
-    {
-        $sql = "SELECT * FROM organizations WHERE org_name = ?"; 
-        $stmt = $conn->prepare($sql); 
+{
+    $sql = "SELECT * FROM organizations WHERE org_name = ?"; 
+    $stmt = $conn->prepare($sql); 
 
-        $id_param = $_POST['org_name']; 
+    $id_param = $_POST['org_name']; 
 
-        $stmt->bind_param('s', $id_param); 
+    $stmt->bind_param('s', $id_param); 
 
-        $stmt->execute(); 
-        $result = $stmt->get_result(); 
+    $stmt->execute(); 
+    $result = $stmt->get_result(); 
 
-        // Fetches all rows as an associative array
-        $organization = $result->fetch_all(MYSQLI_ASSOC); 
-        $_SESSION['organization'] = $organization;
-    }
+    // Fetches all rows as an associative array
+    $organization = $result->fetch_all(MYSQLI_ASSOC); 
+    $_SESSION['organization'] = $organization;
+}
+
+if (isset($_POST['join'])) 
+{
+    $sql = "INSERT INTO orgmembers (user_id, org_id) VALUES (?, ?)";
+    $stmt = $conn->prepare($sql);
+    
+    $user_param = (int) $_SESSION['user_id'];
+    $org_param = (int) $_SESSION['organization'][0]['id'];
+
+    $stmt->bind_param('ii', $user_param, $org_param);
+    $stmt->execute();
+    
+    unset($_SESSION['organization']);
+
+    //header("Location: " . $_SERVER['PHP_SELF']);
+    //exit;
+}
 
 ?>
 
@@ -38,6 +55,10 @@ if (isset($_POST['org_name']))
         <h3><?= $organization[0]['org_name'] ?></h3>
         <p><?= $organization[0]['org_desc'] ?></p>
 
-        <button type="button" onclick="">Join</button>
+        <form method="POST">
+            <label>didy forem</label>
+            <input type="hidden" name="join" value="joe zilch">
+            <input type="submit" onclick="window.location.href='index.php'">
+        </form>
     
     <?php }; ?>
