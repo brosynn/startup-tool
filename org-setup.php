@@ -95,6 +95,7 @@ if (isset($_POST['reset_process'])) {
             
             <!-- 1. Add a 'name' attribute and echo your PHP variable into 'value' -->
             <input type="hidden" name="reset_process" value="<?= htmlspecialchars(true, ENT_QUOTES, 'UTF-8') ?>">
+            <input type="hidden" name="set_owner" value="<?= htmlspecialchars(true, ENT_QUOTES, 'UTF-8') ?>">
             
             <!-- 2. Remove the onclick redirect so the POST request actually submits -->
             <input type="submit" id="reset_process" value="Submit">
