@@ -5,6 +5,34 @@ if (isset($_POST['function'])) {
     eval($_POST['function']);
 }
 
+function getUserInfo(int $user) {
+    $cols = getUserCols($user);
+    $orgs = getUserOrgs($user);
+    $roles = getUserRoles($user);
+
+    echo "Username: " . $cols[0] . "<br>First Name: " . $cols[1] . "<br>Last Name: " . $cols[2];
+    echo "<br>Organization IDs: " . arrayToString($orgs['ids']) . "<br>Organization Names: " . arrayToString($orgs['names']);
+    echo "<br>Role IDs: " . arrayToString($roles['ids']) . "<br>Role Names: " . arrayToString($roles['names']);
+}
+
+function getUserCols(int $user) {
+    global $conn;
+
+    $sql = "SELECT user, first_name, last_name FROM users
+    WHERE id = ?";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $user);
+
+    $stmt->execute();
+    $result = $stmt->get_result()->fetch_all();
+    return $result[0];
+}
+
+function arrayToString(mixed $arr) {
+    return implode(", ", $arr);
+}
+
 function getUserRoles(int $user) { // will return two associative arrays with the user's role 'ids' and the role 'names' respectively.
     global $conn;
     $id_list = [];

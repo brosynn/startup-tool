@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS `orgmembers` (
   `joined_at` timestamp NULL DEFAULT current_timestamp(),
   `status` int(11) NOT NULL DEFAULT 0 COMMENT '0=pending,1=approved,2=rejected',
   PRIMARY KEY (`user_id`),
-  KEY `org_id` (`org_id`)
+  KEY `fk_org_id_orgmembers` (`org_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -77,8 +77,8 @@ CREATE TABLE IF NOT EXISTS `orgposts` (
   `post` int(11) DEFAULT NULL,
   `org` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `fk_post` (`post`),
-  KEY `fk_org` (`org`)
+  KEY `fk_post_orgposts` (`post`),
+  KEY `fk_org_orgposts` (`org`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -94,8 +94,8 @@ CREATE TABLE IF NOT EXISTS `posts` (
   `file` int(11) DEFAULT NULL,
   `author` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `fk_file` (`file`),
-  KEY `fk_author` (`author`)
+  KEY `fk_file_posts` (`file`),
+  KEY `fk_author_posts` (`author`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -110,9 +110,9 @@ CREATE TABLE IF NOT EXISTS `rolemembers` (
   `org` int(11) DEFAULT NULL,
   `role` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `fk_rolemember` (`user`),
-  KEY `fk_orgmember` (`org`),
-  KEY `fk_role` (`role`)
+  KEY `fk_user_rolemembers` (`user`),
+  KEY `fk_org_rolemembers` (`org`),
+  KEY `fk_role_rolemembers` (`role`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -126,8 +126,8 @@ CREATE TABLE IF NOT EXISTS `roleposts` (
   `post` int(11) DEFAULT NULL,
   `role` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `fk_rolepost` (`post`),
-  KEY `fk_postrole` (`role`)
+  KEY `fk_post_roleposts` (`post`),
+  KEY `fk_role_roleposts` (`role`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -141,7 +141,7 @@ CREATE TABLE IF NOT EXISTS `roles` (
   `org` int(11) DEFAULT NULL,
   `name` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `fk_orgID` (`org`)
+  KEY `fk_org_roles` (`org`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -167,43 +167,43 @@ CREATE TABLE IF NOT EXISTS `users` (
 -- Constraints for table `orgmembers`
 --
 ALTER TABLE `orgmembers`
-  ADD CONSTRAINT `orgmembers_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `orgmembers_ibfk_2` FOREIGN KEY (`org_id`) REFERENCES `organizations` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `fk_user_id_orgmembers` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_org_id_orgmembers` FOREIGN KEY (`org_id`) REFERENCES `organizations` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `orgposts`
 --
 ALTER TABLE `orgposts`
-  ADD CONSTRAINT `fk_org` FOREIGN KEY (`org`) REFERENCES `organizations` (`id`),
-  ADD CONSTRAINT `fk_post` FOREIGN KEY (`post`) REFERENCES `posts` (`id`);
+  ADD CONSTRAINT `fk_org_orgposts` FOREIGN KEY (`org`) REFERENCES `organizations` (`id`),
+  ADD CONSTRAINT `fk_post_orgposts` FOREIGN KEY (`post`) REFERENCES `posts` (`id`);
 
 --
 -- Constraints for table `posts`
 --
 ALTER TABLE `posts`
-  ADD CONSTRAINT `fk_author` FOREIGN KEY (`author`) REFERENCES `users` (`id`),
-  ADD CONSTRAINT `fk_file` FOREIGN KEY (`file`) REFERENCES `files` (`id`);
+  ADD CONSTRAINT `fk_author_posts` FOREIGN KEY (`author`) REFERENCES `users` (`id`),
+  ADD CONSTRAINT `fk_file_posts` FOREIGN KEY (`file`) REFERENCES `files` (`id`);
 
 --
 -- Constraints for table `rolemembers`
 --
 ALTER TABLE `rolemembers`
-  ADD CONSTRAINT `fk_orgmember` FOREIGN KEY (`org`) REFERENCES `organizations` (`id`),
-  ADD CONSTRAINT `fk_role` FOREIGN KEY (`role`) REFERENCES `roles` (`id`),
-  ADD CONSTRAINT `fk_rolemember` FOREIGN KEY (`user`) REFERENCES `users` (`id`);
+  ADD CONSTRAINT `fk_org_rolemembers` FOREIGN KEY (`org`) REFERENCES `organizations` (`id`),
+  ADD CONSTRAINT `fk_role_rolemembers` FOREIGN KEY (`role`) REFERENCES `roles` (`id`),
+  ADD CONSTRAINT `fk_user_rolemembers` FOREIGN KEY (`user`) REFERENCES `users` (`id`);
 
 --
 -- Constraints for table `roleposts`
 --
 ALTER TABLE `roleposts`
-  ADD CONSTRAINT `fk_postrole` FOREIGN KEY (`role`) REFERENCES `roles` (`id`),
-  ADD CONSTRAINT `fk_rolepost` FOREIGN KEY (`post`) REFERENCES `posts` (`id`);
+  ADD CONSTRAINT `fk_role_roleposts` FOREIGN KEY (`role`) REFERENCES `roles` (`id`),
+  ADD CONSTRAINT `fk_post_roleposts` FOREIGN KEY (`post`) REFERENCES `posts` (`id`);
 
 --
 -- Constraints for table `roles`
 --
 ALTER TABLE `roles`
-  ADD CONSTRAINT `fk_orgID` FOREIGN KEY (`org`) REFERENCES `organizations` (`id`);
+  ADD CONSTRAINT `fk_org_roles` FOREIGN KEY (`org`) REFERENCES `organizations` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
