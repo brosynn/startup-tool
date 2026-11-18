@@ -1,10 +1,12 @@
 <?php
 require_once 'config.php';
 require_once 'login-check.php';
+require_once 'sql-functions.php';
 
 if (isset($_POST['title'])) {
 
-    $post_title = $_POST['title'];
+    createPost($_POST['title'], $_POST['text'], $_FILES['file'], $_SESSION['user_id'], $_POST['posted_to_org'], $_POST['posted_to_role']);
+    /*$post_title = $_POST['title'];
     $post_text = null;
     if (isset($_POST['text'])) {
         $post_text = $_POST['text'];
@@ -68,7 +70,7 @@ if (isset($_POST['title'])) {
     $stmt->execute();
     
 
-    
+    */
 }
 
 ?>
@@ -89,7 +91,20 @@ if (isset($_POST['title'])) {
             <textarea type="text" id="text" name="text"></textarea><br>
             <input type="submit" onclick="window.location.href='index.php'">
             <label for="file">File: </label>
-            <input type="file" name="file" id="file"><br>
+            <input type="file" name="file" id="file"><br><br>
+            <h2>For whom shall this post be designated?!</h2>
+            <label for="org">Organization(s): </label>
+            <?php 
+                $orgs = getUserOrgs($_SESSION['user_id']);
+                foreach($orgs['ids'] as $index => $org) { ?>
+                <input type="checkbox" name="posted_to_org[]" value="<?php echo $orgs['ids'][$index] ?>"><?php echo $orgs['names'][$index] ?></input>
+            <?php } ?><br>
+            <label for="role">Roles: </label>
+            <?php 
+                $roles = getUserRoles($_SESSION['user_id']);
+                foreach($roles['ids'] as $index => $role) { ?>
+                <input type="checkbox" name="posted_to_role[]" value="<?php echo $roles['ids'][$index] ?>"><?php echo $roles['names'][$index] ?></input>
+            <?php } ?>
         </form>
     </body>
 </html>

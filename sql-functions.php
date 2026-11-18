@@ -1,11 +1,7 @@
 <?php 
 require_once 'config.php';
 
-if (isset($_POST['function'])) {
-    eval($_POST['function']);
-}
-
-function getUserInfo(int $user) {
+function userInfo(int $user) {
     $cols = getUserCols($user);
     $orgs = getUserOrgs($user);
     $roles = getUserRoles($user);
@@ -15,7 +11,7 @@ function getUserInfo(int $user) {
     echo "<br>Role IDs: " . arrayToString($roles['ids']) . "<br>Role Names: " . arrayToString($roles['names']);
 }
 
-function getUserCols(int $user) {
+function getUserCols(int $user) { // will return an associative array containing the user's 'user', 'first_name', and 'last_name'
     global $conn;
 
     $sql = "SELECT user, first_name, last_name FROM users
@@ -33,7 +29,7 @@ function arrayToString(mixed $arr) {
     return implode(", ", $arr);
 }
 
-function getUserRoles(int $user) { // will return two associative arrays with the user's role 'ids' and the role 'names' respectively.
+function getUserRoles(int $user) { // will return two indexed arrays with the user's role 'ids' and the role 'names' respectively.
     global $conn;
     $id_list = [];
     $name_list = [];
@@ -54,7 +50,7 @@ function getUserRoles(int $user) { // will return two associative arrays with th
     return ['ids' => $id_list, 'names' => $name_list];
 }
 
-function getUserOrgs(int $user) { // will return two associative arrays with the user's organization 'ids' and the organization 'names' respectively.
+function getUserOrgs(int $user) { // will return two indexed arrays with the user's organization 'ids' and the organization 'names' respectively.
     global $conn;
     $id_list = [];
     $name_list = [];
@@ -76,6 +72,64 @@ function getUserOrgs(int $user) { // will return two associative arrays with the
     return ['ids' => $id_list, 'names' => $name_list];
 }
 
+function createPost(string $title, string $body_text, mixed $file, int $author, mixed $target_orgs, mixed $target_roles) {
+    global $conn;
+    $file_name = null;
+    $file_id = null;
+
+    if (isset($file['name'])) {
+        $target_dir = "bucket/"; 
+        $file_name = basename($file['name']); 
+        $target_file = $target_dir . $file_name;
+
+        if (is_file($target_file)) { // attributes an incrementing number to a file if it already exists
+            $rep = 1;
+            $temp_name = $file_name;
+            $temp_file = $target_dir . $file_name;;
+            while (is_file($temp_file)) {
+                $temp_name = "($rep)$file_name";
+                $rep++;
+                $temp_file = $target_dir . $temp_name;
+            }
+            $file_name = $temp_name;
+            $target_file = $temp_file;
+        }
+        if (move_uploaded_file($file['tmp_name'], $target_file)) { // if the file can be moved into the target directory, insert its info into the files table
+
+            $sql = "INSERT INTO files (path, name) VALUES (?, ?)";
+            $stmt = $conn->prepare($sql);
+
+            // 'ss' means the parameters are strings
+            $stmt->bind_param("ss", $target_dir, $file_name);
+
+            $stmt->execute();
+
+            // get the id of the file just inserted
+            $sql = "SELECT id FROM files WHERE path = ? AND name = ?";
+            $stmt = $conn->prepare($sql);
+
+            $stmt->bind_param("ss", $target_dir, $file_name);
+
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $file_id = $result->fetch_all()[0][0];
+        } 
+        else {
+            echo "Error uploading file.";
+        }
+    }
+
+    $set_check = "\nTitle: $title, Text: $body_text, File id in db: $file_id"; 
+    echo $set_check;
+
+    $sql = "INSERT INTO posts (title, text, file, author) VALUES (?, ?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+
+    $stmt->bind_param("ssii", $title, $body_text, $file_id, $_SESSION['user_id']);
+
+    $stmt->execute();
+}
+
 /*function getViewablePosts(int $user) { // returns an indexed array containing the ids of every post viewable by the entered user.
     // check the organization(s) and role(s) of the user to return which posts they're allowed to view
     global $conn;
@@ -91,18 +145,3 @@ function getUserOrgs(int $user) { // will return two associative arrays with the
     ON author.id = ";
 }*/
 ?>
-
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Startup Tool</title>
-    </head>
-    <body>
-        <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF'], ENT_QUOTES, 'UTF-8'); ?>" method="POST">
-            <label for="function">Function: </label>
-            <textarea type="text" id="function" name="function" required></textarea><br>
-            <input type="submit" onclick="window.location.href='sql-functions.php'">
-        </form>
-    </body>
-</html>
