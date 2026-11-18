@@ -3,19 +3,7 @@
 // session_start(); 
 
 require_once 'config.php';
-
-$id_param = $_SESSION['user_id'] ?? 0;
-
-$sql = "SELECT * FROM organizations WHERE owner_id = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $id_param);
-$stmt->execute();
-
-$result = $stmt->get_result();
-$orgs_owned = $result->fetch_all(MYSQLI_ASSOC);
-$_SESSION['orgs_owned'] = $orgs_owned;
-
-
+include 'sql-functions.php';
 
 if (isset($_POST['selection']))
     {
@@ -36,11 +24,81 @@ if (isset($_POST['selectFlag']))
 
 if (isset($_SESSION['selected_org']))
     {
+        if (isset($_POST['updateMainFlag']))
+            {    
+                if ($_FILES['logo']['error'] === UPLOAD_ERR_OK)
+                    {
+                        $target_dir = "bucket/"; 
+                        $file_name = basename($_FILES['logo']['name']); 
+                        $target_file = $target_dir . $file_name;
+
+                        if (move_uploaded_file($_FILES['logo']['tmp_name'], $target_file)) 
+                            {
+                                $sql = "UPDATE organizations SET org_name = ?, org_desc = ?, logo_file_path = ?, logo_file_name = ? WHERE id = ?";
+                                $stmt = $conn->prepare($sql);
+                                $stmt->bind_param('ssssi', $_POST['name'], $_POST['desc'], $target_dir, $file_name, $_SESSION['selected_org']['id']);
+                                $stmt->execute();
+
+                                $sql = "SELECT * FROM organizations WHERE id = ?";
+                                $stmt = $conn->prepare($sql);
+                                $stmt->bind_param("i", $_POST['selection']);
+                                $stmt->execute();
+
+                                $result = $stmt->get_result();
+                                $selected_org = $result->fetch_assoc();
+                                $_SESSION['selected_org'] = $selected_org;
+                            }
+                    }
+                    else
+                        {
+                            $sql = "UPDATE organizations SET org_name = ?, org_desc = ? WHERE id = ?";
+                            $stmt = $conn->prepare($sql);
+                            $stmt->bind_param('ssi', $_POST['name'], $_POST['desc'], $_SESSION['selected_org']['id']);
+                            $stmt->execute();
+
+                            $sql = "SELECT * FROM organizations WHERE id = ?";
+                            $stmt = $conn->prepare($sql);
+                            $stmt->bind_param("i", $_POST['selection']);
+                            $stmt->execute();
+
+                            $result = $stmt->get_result();
+                            $selected_org = $result->fetch_assoc();
+                            $_SESSION['selected_org'] = $selected_org;
+                        }
+            }
+
         $selected_org = $_SESSION['selected_org'];
     }
+
+$id_param = $_SESSION['user_id'] ?? 0;
+
+$sql = "SELECT * FROM organizations WHERE owner_id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $id_param);
+$stmt->execute();
+
+$result = $stmt->get_result();
+$orgs_owned = $result->fetch_all(MYSQLI_ASSOC);
+$_SESSION['orgs_owned'] = $orgs_owned;
+
+
 ?>
 
+<style>
+  .resize-wrapper {
+    display: inline-block;
+    resize: horizontal;
+    overflow: hidden;
+    min-width: 100px;
+    max-width: 2000px;
+    padding-right: 12px; 
+  }
 
+  .resize-wrapper input[type="text"] {
+    width: 100%;
+    box-sizing: border-box;
+  }
+</style>
 
 
 
@@ -53,7 +111,6 @@ if (isset($_SESSION['selected_org']))
     
     <?php foreach ($orgs_owned as $org): ?>
         <?php 
-            // Safely escape output and create a valid HTML ID
             $org_id = htmlspecialchars($org['id'], ENT_QUOTES, 'UTF-8');
             $org_name = htmlspecialchars($org['org_name'], ENT_QUOTES, 'UTF-8');
         ?>
@@ -74,5 +131,19 @@ if (isset($_SESSION['selected_org']))
 
 <?php if (isset($selected_org))
 { ?>
-    <h1><?= $selected_org['org_name'] ?></h1>
+    <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF'], ENT_QUOTES, 'UTF-8'); ?>" method="POST" enctype="multipart/form-data">
+            <label for="name">Name: </label>
+            <input type="text" id="name" name="name" value="<?= $selected_org['org_name']; ?>"required><br>
+            <div class="resize-wrapper">
+                <label for="desc">Description (max of 256 chars): </label>
+                <input type="text" name="desc" value="<?= $selected_org['org_desc']; ?>" required>
+            </div><br>
+            <img src="<?= $selected_org['logo_file_path'] . $selected_org['logo_file_name']?>" alt="org_logo" width="350" height="350"><br>
+            <label for="logo">Update Logo Picture: </label>
+            <input type="file" name="logo" id="logo"><br>
+            <input type="hidden" name="updateMainFlag" value="arbi">
+            <input type="submit" onclick="window.location.href='index.php'">
+        </form>
+
+    
 <?php } ?>

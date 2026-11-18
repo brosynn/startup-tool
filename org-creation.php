@@ -1,4 +1,5 @@
 <?php include 'config.php'; 
+include 'sql-functions.php';
 
 $set_check = null;
 if (isset($_POST['name'])) {
