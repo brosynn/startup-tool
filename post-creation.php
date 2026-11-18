@@ -4,73 +4,7 @@ require_once 'login-check.php';
 require_once 'sql-functions.php';
 
 if (isset($_POST['title'])) {
-
     createPost($_POST['title'], $_POST['text'], $_FILES['file'], $_SESSION['user_id'], $_POST['posted_to_org'], $_POST['posted_to_role']);
-    /*$post_title = $_POST['title'];
-    $post_text = null;
-    if (isset($_POST['text'])) {
-        $post_text = $_POST['text'];
-    }
-    $file_name = null;
-    $file_id = null;
-    echo "Text: $post_text, File name: $file_name, File id: $file_id\n";
-
-    if (isset($_FILES['file']['name'])) {
-        $target_dir = "bucket/"; 
-        $file_name = basename($_FILES['file']['name']); 
-        $target_file = $target_dir . $file_name;
-
-        if (is_file($target_file)) { // attributes an incrementing number to a file if it already exists
-            $rep = 1;
-            $temp_name = $file_name;
-            $temp_file = $target_dir . $file_name;;
-            while (is_file($temp_file)) {
-                $temp_name = "($rep)$file_name";
-                $rep++;
-                $temp_file = $target_dir . $temp_name;
-            }
-            $file_name = $temp_name;
-            $target_file = $temp_file;
-        }
-        if (move_uploaded_file($_FILES['file']['tmp_name'], $target_file)) { // if the file can be moved into the target directory, insert its info into the files table
-            $set_check = "File name: $file_name, File path: $target_dir"; 
-            echo $set_check;
-
-            $sql = "INSERT INTO files (path, name) VALUES (?, ?)";
-            $stmt = $conn->prepare($sql);
-
-            // 'ss' means the parameters are strings
-            $stmt->bind_param("ss", $target_dir, $file_name);
-
-            $stmt->execute();
-
-            // get the id of the file just inserted
-            $sql = "SELECT id FROM files WHERE path = ? AND name = ?";
-            $stmt = $conn->prepare($sql);
-
-            $stmt->bind_param("ss", $target_dir, $file_name);
-
-            $stmt->execute();
-            $result = $stmt->get_result();
-            $file_id = $result->fetch_all()[0][0];
-        } 
-        else {
-            echo "Error uploading file.";
-        }
-    }
-
-    $set_check = "\nTitle: $post_title, Text: $post_text, File id in db: $file_id"; 
-    echo $set_check;
-
-    $sql = "INSERT INTO posts (title, text, file, author) VALUES (?, ?, ?, ?)";
-    $stmt = $conn->prepare($sql);
-
-    $stmt->bind_param("ssii", $post_title, $post_text, $file_id, $_SESSION['user_id']);
-
-    $stmt->execute();
-    
-
-    */
 }
 
 ?>
@@ -97,7 +31,11 @@ if (isset($_POST['title'])) {
             <?php 
                 $orgs = getUserOrgs($_SESSION['user_id']);
                 foreach($orgs['ids'] as $index => $org) { ?>
-                <input type="checkbox" name="posted_to_org[]" value="<?php echo $orgs['ids'][$index] ?>"><?php echo $orgs['names'][$index] ?></input>
+                <input type="radio" name="posted_to_org[]" value="<?php echo $orgs['ids'][$index]; ?>" required <?php
+                if ($index == 0) {
+                    echo "checked";
+                }
+                ?>><?php echo $orgs['names'][$index];?></input>
             <?php } ?><br>
             <label for="role">Roles: </label>
             <?php 
