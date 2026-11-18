@@ -72,7 +72,7 @@ function getUserOrgs(int $user) { // will return two indexed arrays with the use
     return ['ids' => $id_list, 'names' => $name_list];
 }
 
-function createPost(string $title, string $body_text, mixed $file, int $author, mixed $target_orgs, mixed $target_roles) {
+function uploadFile(mixed $file) {
     global $conn;
     $file_name = null;
     $file_id = null;
@@ -118,6 +118,12 @@ function createPost(string $title, string $body_text, mixed $file, int $author, 
             echo "Error uploading file.";
         }
     }
+    return $file_id;
+}
+
+function createPost(string $title, string $body_text, mixed $file, int $author, mixed $target_orgs, mixed $target_roles) {
+    global $conn;
+    $file_id = uploadFile($file);
 
     $set_check = "\nTitle: $title, Text: $body_text, File id in db: $file_id"; 
     echo $set_check;
@@ -125,7 +131,7 @@ function createPost(string $title, string $body_text, mixed $file, int $author, 
     $sql = "INSERT INTO posts (title, text, file, author) VALUES (?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
 
-    $stmt->bind_param("ssii", $title, $body_text, $file_id, $_SESSION['user_id']);
+    $stmt->bind_param("ssii", $title, $body_text, $file_id, $author);
 
     $stmt->execute();
 }
