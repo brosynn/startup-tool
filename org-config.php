@@ -145,5 +145,8 @@ $_SESSION['orgs_owned'] = $orgs_owned;
             <input type="submit" onclick="window.location.href='index.php'">
         </form>
 
+        <iframe src="add-question.php" width="500" height="300" style="border:1px solid #ccc;"></iframe>
+
+
     
 <?php } ?>
