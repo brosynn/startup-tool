@@ -142,8 +142,11 @@ $_SESSION['orgs_owned'] = $orgs_owned;
             <label for="logo">Update Logo Picture: </label>
             <input type="file" name="logo" id="logo"><br>
             <input type="hidden" name="updateMainFlag" value="arbi">
-            <input type="submit" onclick="window.location.href='index.php'">
+            <button type="submit" onclick="window.location.href='index.php'">Submit</button>
         </form>
+
+        <iframe src="add-question.php" width="500" height="300" style="border:1px solid #ccc;"></iframe>
+
 
     
 <?php } ?>

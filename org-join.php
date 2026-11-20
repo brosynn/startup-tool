@@ -45,7 +45,7 @@ if (isset($_POST['join']))
 <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF'], ENT_QUOTES, 'UTF-8'); ?>" method="POST">
         <label for="org_name">Enter Organization Name: </label>
         <input type="text" id="org_name" name="org_name" required autocomplete="on"><br>
-        <input type="submit" onclick="window.location.href='index.php'">
+        <button type="submit" onclick="window.location.href='index.php'">Submit</button>
     </form>
 
     <?php if (isset($organization)) 
@@ -58,7 +58,7 @@ if (isset($_POST['join']))
         <form method="POST">
             <label>didy forem</label>
             <input type="hidden" name="join" value="joe zilch">
-            <input type="submit" onclick="window.location.href='index.php'">
+            <button type="submit" onclick="window.location.href='index.php'">Submit</button>
         </form>
     
     <?php }; ?>

@@ -28,7 +28,7 @@ if (isset($_POST['id']))
     <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF'], ENT_QUOTES, 'UTF-8'); ?>" method="POST">
         <label for="org">Enter ID: </label>
         <input type="text" id="id" name="id" required><br>
-        <input type="submit" onclick="window.location.href='index.php'">
+        <button type="submit" onclick="window.location.href='index.php'">Submit</button>
     </form>
 
     <?php if (isset($organization)) 
@@ -36,5 +36,9 @@ if (isset($_POST['id']))
         <img src="<?= $organization[0]['logo_file_path'] . $organization[0]['logo_file_name']?>" alt="org_logo" width="350" height="350">
         <h3><?= $organization[0]['org_name'] ?></h3>
         <p><?= $organization[0]['org_desc'] ?></p>
+
+        <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF'], ENT_QUOTES, 'UTF-8'); ?>" method="POST">
+            <label for=''>Hi</label>
+        </form>
     <?php }; ?>
 </body>

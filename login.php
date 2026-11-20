@@ -50,7 +50,8 @@ if (isset($_POST['user'])) { //checks if the username entered exists and if the 
             <input type="text" id="user" name="user" required><br>
             <label for="pass">Password: </label>
             <input type="password" id="pass" name="pass" required><br>
-            <input type="submit" onclick="window.location.href='index.php'">
+            <button type="submit" onclick="window.location.href='index.php'">Submit</button>
         </form>
+        <button onclick="window.location.href='index.php'">Home</button>
     </body>
 </html>
