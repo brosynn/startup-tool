@@ -15,6 +15,7 @@ if (isset($_POST['selection']))
         $result = $stmt->get_result();
         $selected_org = $result->fetch_assoc();
         $_SESSION['selected_org'] = $selected_org;
+
     }
 
 if (isset($_POST['selectFlag']))
@@ -68,6 +69,29 @@ if (isset($_SESSION['selected_org']))
             }
 
         $selected_org = $_SESSION['selected_org'];
+
+        $sql = "SELECT * FROM questions WHERE org_id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $selected_org['id']);
+        $stmt->execute();
+
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $questions = $result->fetch_all(MYSQLI_ASSOC);
+        $id_array = array_column($questions, 'id'); 
+        
+        $id_str = null;
+
+        foreach ($id_array as $id) {
+            $id_str .= $id . "+";
+        }
+
+        $sql = "UPDATE organizations SET question_ids = ? WHERE id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param('si', $id_str, $selected_org['id']);
+        $stmt->execute();
+
+        
     }
 
 $id_param = $_SESSION['user_id'] ?? 0;
@@ -145,7 +169,7 @@ $_SESSION['orgs_owned'] = $orgs_owned;
             <button type="submit" onclick="window.location.href='index.php'">Submit</button>
         </form>
 
-        <iframe src="add-question.php" width="500" height="300" style="border:1px solid #ccc;"></iframe>
+        <iframe src="add-question.php" width="75%" height="500" style="border:1px solid #ccc;"></iframe>
 
 
     
