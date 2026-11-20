@@ -6,6 +6,16 @@ if (isset($_SESSION['selected_org']))
         $selected_org = $_SESSION['selected_org'];
     }
 
+if (isset($_POST['title']))
+    {
+        $sql = "INSERT INTO questions (org_id, title, min_len) VALUES (?, ?, ?)";
+        $stmt = $conn->prepare($sql);
+
+        
+        $stmt->bind_param("isi", $selected_org['id'], $_POST['title'], $_POST['limit']);
+
+        $stmt->execute();
+    }
 
 ?>
 
