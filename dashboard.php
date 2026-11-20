@@ -19,6 +19,7 @@ function getPosts() {
         <h1>Welcome to your Dashboard!</h1>
         <p>I hate you</p>
         <button onclick="window.location.href='post-creation.php'">Create Post</button>
+        <button onclick="window.location.href='org-creation.php'">Create Organization</button>
         <div id="posts">
             <?php ?>
         </div>

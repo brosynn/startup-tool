@@ -72,7 +72,7 @@ function getUserOrgs(int $user) { // will return two indexed arrays with the use
     return ['ids' => $id_list, 'names' => $name_list];
 }
 
-function uploadFile(mixed $file) {
+function uploadFile(mixed $file) { // uploads a file to the db and returns its id in the db
     global $conn;
     $file_name = null;
     $file_id = null;
@@ -121,7 +121,24 @@ function uploadFile(mixed $file) {
     return $file_id;
 }
 
-function createPost(string $title, string $body_text, mixed $file, int $author, mixed $target_orgs, mixed $target_roles) {
+function stmtExecute(string $sql, string $types, mixed $values) {
+    global $conn;
+    $stmt = $conn->prepare($sql);
+
+    $valueString = arrayToString($values);
+    $code = "stmt->bind_param(\"$types\", $valueString);";
+    echo $code; // stmtExecute("INSERT INTO posts (title, text, file, author) VALUES (?, ?, ?, ?)", "ssii", ['"help"', '"oh god"', 2, 3]);
+    // $stmt->bind_param("$types", $values);
+    eval($code);
+    $stmt->execute();
+
+}
+
+function userJoinOrg(int $user, int $org) {
+    $sql = "SELECT id FROM orgmembers ON user_id = ?, ";
+}
+
+function createPost(string $title, string $body_text, mixed $file, int $author, mixed $target_orgs, mixed $target_roles) { // creates a post
     global $conn;
     $file_id = uploadFile($file);
 

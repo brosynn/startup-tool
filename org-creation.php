@@ -1,5 +1,6 @@
 <?php include 'config.php'; 
 include 'sql-functions.php';
+include 'login-check.php';
 
 $set_check = null;
 if (isset($_POST['name'])) {
@@ -12,18 +13,18 @@ if (isset($_POST['name'])) {
         $target_file = $target_dir . $file_name;
 
         if (move_uploaded_file($_FILES['logo']['tmp_name'], $target_file)) {
-        
-                $set_check = "name: $name, Description: $desc, Logo file name: $file_name, logo file path: $target_dir"; 
+    
+            $set_check = "name: $name, Description: $desc, Logo file name: $file_name, logo file path: $target_dir"; 
 
-                $sql = "INSERT INTO organizations (org_name, org_desc, logo_file_name, logo_file_path) VALUES (?, ?, ?, ?)";
-                $stmt = $conn->prepare($sql);
+            $sql = "INSERT INTO organizations (org_name, org_desc, logo_file_name, logo_file_path, owner_id) VALUES (?, ?, ?, ?, ?)";
+            $stmt = $conn->prepare($sql);
 
-                // 'ssss' means all 4 parameters are strings
-                $stmt->bind_param("ssss", $name, $desc, $file_name, $target_dir);
+            // 'ssss' means all 4 parameters are strings
+            $stmt->bind_param("ssssi", $name, $desc, $file_name, $target_dir, $_SESSION['user_id']);
 
-                $stmt->execute();
-        
-                echo "Organization added successfully!";
+            $stmt->execute();
+    
+            echo "Organization added successfully!";
         } 
         else {
                 echo "Error uploading file.";
