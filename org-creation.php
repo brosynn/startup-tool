@@ -49,7 +49,7 @@ if (isset($_POST['name'])) {
             <input type="text" name="desc" required><br>
             <label for="logo">Logo Picture: </label>
             <input type="file" name="logo" id="logo" required><br>
-            <input type="submit" onclick="window.location.href='index.php'">
+            <button type="submit" onclick="window.location.href='index.php'">Submit</button>
         </form>
     </body>
 </html>

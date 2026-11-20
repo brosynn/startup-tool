@@ -28,7 +28,7 @@ if (isset($_POST['id']))
     <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF'], ENT_QUOTES, 'UTF-8'); ?>" method="POST">
         <label for="org">Enter ID: </label>
         <input type="text" id="id" name="id" required><br>
-        <input type="submit" onclick="window.location.href='index.php'">
+        <button type="submit" onclick="window.location.href='index.php'">Submit</button>
     </form>
 
     <?php if (isset($organization)) 

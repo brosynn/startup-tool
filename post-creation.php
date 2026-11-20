@@ -23,7 +23,7 @@ if (isset($_POST['title'])) {
             <textarea type="text" id="title" name="title" required></textarea><br>
             <label for="text">Text: </label>
             <textarea type="text" id="text" name="text"></textarea><br>
-            <input type="submit" onclick="window.location.href='index.php'">
+            <button type="submit" onclick="window.location.href='index.php'">Submit</button>
             <label for="file">File: </label>
             <input type="file" name="file" id="file"><br><br>
             <h2>For whom shall this post be designated?!</h2>

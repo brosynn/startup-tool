@@ -37,7 +37,7 @@ if (isset($_POST['user'])) { // NEED TO MAKE USERNAMES UNIQUE
             <input type="text" id="first_name" name="first_name" required><br>
             <label for="last_name">Last Name: </label>
             <input type="text" id="last_name" name="last_name" required><br>
-            <input type="submit" onclick="window.location.href='index.php'">
+            <button type="submit" onclick="window.location.href='index.php'">Submit</button>
         </form>
     </body>
 </html>

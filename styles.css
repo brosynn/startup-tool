@@ -1,0 +1,22 @@
+body {
+    display: flex;
+    flex-direction: column;
+    background-color: #FFE0BD;
+    color: #4b4136;
+    align-items: center;
+    vertical-align: middle;
+}
+
+button {
+    background-color: #d4b796;
+    width: 180px;
+    height: 120px;
+    border-radius: 10%;
+    border: #4b4136;
+    margin: 20px;
+    font-family: "BBH Bogle", sans-serif;
+}
+
+button:hover {
+    background-color: #c3a685;
+}

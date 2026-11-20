@@ -71,7 +71,7 @@ if (isset($_POST['reset_process'])) {
 <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF'], ENT_QUOTES, 'UTF-8'); ?>" method="POST">
         <label for="org_name">Enter Organization Name: </label>
         <input type="text" id="org_name" name="org_name" required autocomplete="on"><br>
-        <input type="submit" onclick="window.location.href='index.php'">
+        <button type="submit" onclick="window.location.href='index.php'">Submit</button>
     </form>
 
 <?php if (isset($organization) || isset($user)) 
@@ -84,7 +84,7 @@ if (isset($_POST['reset_process'])) {
         <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF'], ENT_QUOTES, 'UTF-8'); ?>" method="POST">
             <label for="owner_name">Enter Desired Owner Account Name: </label>
             <input type="text" id="owner_name" name="owner_name" required><br>
-            <input type="submit" onclick="window.location.href='index.php'">
+            <button type="submit" onclick="window.location.href='index.php'">Submit</button>
         </form>
 
 <?php if (isset($user)) { ?>
@@ -98,7 +98,7 @@ if (isset($_POST['reset_process'])) {
             <input type="hidden" name="set_owner" value="<?= htmlspecialchars(true, ENT_QUOTES, 'UTF-8') ?>">
             
             <!-- 2. Remove the onclick redirect so the POST request actually submits -->
-            <input type="submit" id="reset_process" value="Submit">
+            <button type="submit" id="reset_process" value="Submit">Submit</button>
         </form>
         <?php }; ?>
     <?php }; ?>

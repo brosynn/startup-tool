@@ -17,7 +17,7 @@ if (isset($_POST['function'])) {
         <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF'], ENT_QUOTES, 'UTF-8'); ?>" method="POST">
             <label for="function">Function: </label>
             <textarea type="text" id="function" name="function" required></textarea><br>
-            <input type="submit" onclick="window.location.href='debug-functions.php'">
+            <button type="submit" onclick="window.location.href='debug-functions.php'">Submit</button>
         </form>
     </body>
 </html>

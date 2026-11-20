@@ -25,7 +25,7 @@ if (isset($selected_org))
             <label for="limit">Response Character Limit:</label>
             <input type="range" min="3" max="500" name="limit" step="1" oninput="this.nextElementSibling.value = this.value">
             <output>250</output><br>
-            <input type="submit">
+            <button type="submit">Submit</button>
         </form>
     
     
