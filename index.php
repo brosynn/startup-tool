@@ -5,11 +5,8 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) {
  ?>
 
 <?php include 'header.php'; ?>
-    <body>
-        <h1>Welcome to the Startup Tool! (name pending)</h1>
-        <br>
-        <button onclick="window.location.href='user-creation.php'">New User</button>
-    </body>
-        <button onclick="window.location.href='login.php'">Log In</button>
-    </body>
-</html>
+    <h1>Welcome to the Startup Tool! (name pending)</h1>
+    <br>
+    <button onclick="window.location.href='user-creation.php'">New User</button>
+    <button onclick="window.location.href='login.php'">Log In</button>
+<?php include 'footer.php'; ?>
