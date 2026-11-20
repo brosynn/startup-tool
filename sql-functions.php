@@ -3,7 +3,7 @@ require_once 'config.php';
 
 function userInfo(int $user) {
     $cols = getUserCols($user);
-    $orgs = getUserOrgs($user);
+    $orgs = getUserOrgs($user, 1);
     $roles = getUserRoles($user);
 
     echo "Username: " . $cols[0] . "<br>First Name: " . $cols[1] . "<br>Last Name: " . $cols[2];
@@ -50,7 +50,29 @@ function getUserRoles(int $user) { // will return two indexed arrays with the us
     return ['ids' => $id_list, 'names' => $name_list];
 }
 
-function getUserOrgs(int $user) { // will return two indexed arrays with the user's organization 'ids' and the organization 'names' respectively.
+function getUserOrgRequests(int $user) { // will return two indexed arrays with the user's requested organization 'ids' and the organization 'names' respectively.
+    global $conn;
+    $id_list = [];
+    $name_list = [];
+
+    $sql = "SELECT organizations.id AS id, organizations.org_name AS name FROM organizations JOIN orgmembers
+    ON orgmembers.user_id = ?
+    AND organizations.id = orgmembers.org_id";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $user);
+
+    $stmt->execute();
+    $orgs = $stmt->get_result();
+    foreach ($orgs as $org) { // each $org has 2 associative array values, id and name. 
+        $id_list[] = $org['id'];
+        $name_list[] = $org['name'];
+    }
+    return ['ids' => $id_list, 'names' => $name_list];
+}
+
+function getUserOrgs(int $user, int $status) { /* will return two indexed arrays with the user's organization 'ids' and the organization 'names' respectively.
+will only return organizations with the requested join status*/
     global $conn;
     $id_list = [];
     $name_list = [];
@@ -58,10 +80,10 @@ function getUserOrgs(int $user) { // will return two indexed arrays with the use
     $sql = "SELECT organizations.id AS id, organizations.org_name AS name FROM organizations JOIN orgmembers
     ON orgmembers.user_id = ?
     AND organizations.id = orgmembers.org_id
-    AND orgmembers.status = 1";
+    AND orgmembers.status = ?";
 
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $user);
+    $stmt->bind_param("ii", $user, $status);
 
     $stmt->execute();
     $orgs = $stmt->get_result();
@@ -121,7 +143,7 @@ function uploadFile(mixed $file) { // uploads a file to the db and returns its i
     return $file_id;
 }
 
-function stmtExecute(string $sql, string $types, mixed $values) {
+/*function stmtExecute(string $sql, string $types, mixed $values) {
     global $conn;
     $stmt = $conn->prepare($sql);
 
@@ -132,10 +154,22 @@ function stmtExecute(string $sql, string $types, mixed $values) {
     eval($code);
     $stmt->execute();
 
-}
+}*/
 
-function userJoinOrg(int $user, int $org) {
-    $sql = "SELECT id FROM orgmembers ON user_id = ?, ";
+function orgJoinRequest(int $user, int $org) {
+    global $conn;
+    $org_ids = getUserOrgRequests($user)['ids'];
+
+    if (!in_array($org, $org_ids)) {
+        $sql = "INSERT INTO orgmembers (user_id, org_id, status) VALUES (?, ?, 0)";
+        $stmt = $conn->prepare($sql);
+
+        // 'ss' means the parameters are strings
+        //$stmt->bind_param("ss", $target_dir, $file_name);
+
+        //$stmt->execute();
+    }
+    return "User already requested to join this organization!";
 }
 
 function createPost(string $title, string $body_text, mixed $file, int $author, mixed $target_orgs, mixed $target_roles) { // creates a post
